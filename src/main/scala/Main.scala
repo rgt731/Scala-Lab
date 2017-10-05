@@ -1,6 +1,7 @@
 
 import math._
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable._
+import scala.collection.immutable.List
 
 object Main extends App{
 
@@ -14,8 +15,6 @@ object Main extends App{
     println(result)
   }
 
-  //circleArea(8)
-  //201.06
 
   //2
   //Define a Scala function called hypotenuse, which takes two arguments.
@@ -28,10 +27,6 @@ object Main extends App{
     println(result)
   }
 
-  //hypotenuse(3, 4)
-  //5.0
-  // hypotenuse (9, 16)
-  //18.35755975068582
 
   //3
   //Write a Scala function called reverseDigits, which will take in an integer (positive or negative) and
@@ -51,10 +46,7 @@ object Main extends App{
   }
 
 
- // reverseDigits( 123)
-  //321
-  //reverseDigits( -42)
-  //-24
+
 
   //4
   //Write a Scala function called conditionalRemove that takes a list and an element and
@@ -74,39 +66,56 @@ object Main extends App{
 
   }
 
-  //conditionalRemove("a", List("b", "c", "e", "a", "g", "a"))
-  //List("b", "c", "d", "e", "a","g")
-  //conditionalRemove("a", List("b", "c", "e"))
-  //List("b", "c", "e")
 
-//5 ******** Check this *******
+
+//5
   //Write a Scala function called isPalindrome that takes a String, Int, or List and determines if it is a palindrome (i.e., the same forwards and backwards).
   // The comparison should be case-insensitive (i.e., case does NOT matter). Spaces and punctuation should be ignored.
 
   def isPalindrome( s: String) = {
-    val sanitized = s.toLowerCase.replace(" ","").replaceAll("""[\p{Punct}]""", "")
-    if (sanitized.reverse == sanitized){
+    val filter = s.toLowerCase.replace(" ","").replaceAll("""[\p{Punct}]""", "")
+    if (filter.reverse == filter){
       println(true)
     }
     else{
       println(false)
     }
-
-
   }
 
-  //isPalindrome( "12321")
-  //true
-   //isPalindrome( "racecar")
-  //true
-  //isPalindrome( "mom")
-  //true
-  //isPalindrome( "Mammam")
-  //true
-  //isPalindrome( "Yo Momma")
-  //false
-  // isPalindrome( "rats! live on no evil star." )
-  //true
+  //Function for the case of an Int being passed in.
+  def isPalindrome( num: Int) = {
+
+    var IntToString = num.toString()
+    var reverseIntToString = IntToString.reverse
+
+    if (IntToString == reverseIntToString){
+      println(true)
+    }
+    else{
+      println(false)
+    }
+  }
+   // isPalindrome(12321)
+   // isPalindrome(1232)
+
+  //Function for the case of a List being passed in.
+  def isPalindrome(list: List[Any]) = {
+    def reverse[A](l: List[A]): List[A] = {
+      def _reverse(res: List[A], rem: List[A]): List[A] = rem match {
+        case Nil => res
+        case h :: tail => _reverse(h :: res, tail)
+      }
+      _reverse(Nil, l)
+    }
+    val rev = reverse(list)
+    if (rev == list){
+      println(true)
+    }
+    else{
+      println(false)
+    }
+  }
+
 //6
   //Write a Scala function called isPerfectNumber that takes an integer and returns a tuple containing a Boolean and a List of Ints.
   // The Boolean represents the “perfectness” of the number. (i.e., the sum of its divisors except itself is the number).
@@ -132,92 +141,200 @@ object Main extends App{
     }
   }
 
-  isPerfectNumber(6)
-  //(true, List( 1, 2, 3))
-  isPerfectNumber(7)
-  //(false,List(1))
 
-//7
+
+
+  //7
   //Write a Scala class to represent a ComplexNumber, i.e., a number with a real and an imaginary part.
   //Define the standard arithmetic operation on the class: Add, Subtract, Multiply, Divide, Conjugate, Reciprocal, and Abs.
 
 
-  class ComplexNumber(realNumber: Int, imaginaryNumber : Int){
-
-    //real number     //imaginary number
-    def  get{
-      val newNumber = realNumber + imaginaryNumber;
-      newNumber.toString();
-      return newNumber;
-    }
-
+  class ComplexNumber (val realNumber: Double, val complexNumber: Double) {
 
     //Addition: (a +bi)+(c +di) = (a +c) + (b +d)i
-   /* def addition(c:) = (realNumber, imaginaryNumber ) {
-
-        //val additionOperation = realNumber + imaginaryNumber;
-        //return additionOperation;
-
-    }*/
-    def add(c: ComplexNumber) = new ComplexNumber(realNumber + c.realNumber, imaginaryNumber + c.imaginaryNumber)
+    def add(addition: ComplexNumber) = new ComplexNumber(this.realNumber + addition.realNumber, this.complexNumber + addition.complexNumber)
 
     //Subtraction: (a +bi) – (c +di) = (a-c) + (b-d)i
-    def subtraction = (realNumber,imaginaryNumber ) : Unit{
-
-    }
+    def subtract(subtraction: ComplexNumber) = new ComplexNumber(this.realNumber - subtraction.realNumber, this.complexNumber - subtraction.complexNumber)
 
     // Multiplication: (a +bi) (c +di) = ac + bci + adi + bdi22 = (ac - bd) + (bc + ad) i
-    def multiplication = (realNumber,imaginaryNumber ) : Unit{
-
+    def multiply(multiplication: ComplexNumber) = {
+      val realPart = (this.realNumber * multiplication.realNumber) - (this.complexNumber * multiplication.complexNumber)
+      val complexPart = (this.realNumber * multiplication.complexNumber) + (this.complexNumber * multiplication.realNumber)
+      new ComplexNumber(realPart, complexPart)
     }
 
     //Division: (a+bi)(c+di)(a+bi)(c+di) = (ac+bd)(c2+d2)(ac+bd)(c2+d2) + (bc−ad)(c2+d2)i
-    def division = (realNumber,imaginaryNumber ) : Unit{
-
+    def divide(divisor: ComplexNumber) = {
+      val numerator = this multiply divisor.conjugate
+      val denominator = divisor multiply divisor.conjugate
+      new ComplexNumber(numerator.realNumber / denominator.realNumber, numerator.complexNumber / denominator.realNumber)
     }
 
     //Conjugate
     //Multiply by (-1) then do opearation
-    def conjugate = (realNumber,imaginaryNumber ) : Unit{
-
-    }
+    def conjugate = new ComplexNumber(this.realNumber, this.complexNumber * -1)
 
     //Reciprocal
     // 1/ given complex number : 2-3i == 1/2-3i
-    def reciprocal = (realNumber,imaginaryNumber ) : Unit{
-
-    }
+    def reciprocal = this.conjugate divide new ComplexNumber(pow(this.abs, 2), 0)
 
     //Abs ( Absolute Value )
     // \ 3-4i \  = 5
     // 3^2 + 4^2 = \ 3-4i \^2
     // 25 = \ 3-4i \^2
     // 5 \ 3-4i \
-    def abs = (realNumber,imaginaryNumber ) : Unit{
+    def abs = sqrt(pow(this.realNumber, 2) + (pow(this.complexNumber, 2)))
 
+    override def toString = {
+      if (complexNumber > 0) {
+        s"$realNumber + ${complexNumber}i"
+      }
+      else {
+        s"$realNumber - ${complexNumber * -1}i"
+      }
     }
-
   }
 
-  
+  //problem 1
+  //circleArea(8)
+  //201.06
 
+  //problem 2
+  //hypotenuse(3, 4)
+  //5.0
+  // hypotenuse (9, 16)
+  //18.35755975068582
+
+  //problem 3
+  // reverseDigits( 654)
+  //456
+  //reverseDigits( -85)
+  //-58
+
+  //problem 4
+  //conditionalRemove("a", List("b", "c", "e", "a", "g", "a"))
+  //List("b", "c", "d", "e", "a","g")
+  //conditionalRemove("a", List("b", "c", "e"))
+  //List("b", "c", "e")
+
+  // problem 5
+  //isPalindrome(List ("a", "b", "b", "a"))
+  //isPalindrome(List ("a", "b", "c", "a"))
+
+  //isPalindrome( "12321")
+  //true
+  //isPalindrome( "racecar")
+  //true
+  //isPalindrome( "mom")
+  //true
+  //isPalindrome( "Mammam")
+  //true
+  //isPalindrome( "Yo Momma")
+  //false
+  // isPalindrome( "rats! live on no evil star." )
+  //true
+
+
+  // problem 6
+  //isPerfectNumber(6)
+  //(true, List( 1, 2, 3))
+  //isPerfectNumber(7)
+  //(false,List(1))
+
+  //problem 7
+  val x = new ComplexNumber(8, 12)
+  //println(x)
+  //println(x.add(new ComplexNumber(3,5)))
+  //println(x.subtract(new ComplexNumber(2,5)))
+  //println(x.multiply(new ComplexNumber(2,5)))
+  //println(x.divide(new ComplexNumber(2,6)))
+  //println(x.abs)
+  //println(x.reciprocal)
+
+
+  //problem 8
+  //println(Stats.mean(List(6.0, 7.0, 8.0)))
+  //println(Stats.min(List(6.0, 7.0, 8.0)))
+  //println(Stats.max(List(7.0, 8.0, 9.0)))
+  //println(Stats.mode(List(1.0, 2.0, 3.0, 3.0)))
+
+  //problem 9
+  //println(foldStats.max(List(0.2, 3.5, 0.3, 3.0, 3.0)))
+  //println(foldStats.min(List(0.2, 3.5, 0.3, 3.0, 3.0)))
+  //println(foldStats.mean(List(0.2, 3.5, 0.3, 3.0, 3.0)))
+
+
+
+
+
+  }
 
 //8
-  //Write a Scala object named Stats with the following functions that accepts a list of Doubles.
-  // (You may not use built-in functions that compute these functions for you.)
+//Write a Scala object named Stats with the following functions that accepts a list of Doubles.
+// (You may not use built-in functions that compute these functions for you.)
 
+object Stats {
 
-  def stats() ={
-
-
+  def mean(list: List[Double]) = {
+    list.sum / list.length
   }
-  val list = List(1.0,2.2,3.3)
 
-  def median() : List[Double] ={
-
-    
-
+  def min(list: List[Double]) = {
+    //val mininimumNumber = list.reduceLeft(FindLeast())
+    var minValue = Double.MaxValue
+    for (i <- 0 to list.length - 1) {
+      if (list(i) < minValue) {
+        minValue = list(i)
+      }
+    }
+    minValue
   }
+
+  def max(list: List[Double]) = {
+    var maxValue = -Double.MaxValue
+    for (i <- 0 to list.length - 1) {
+      if (list(i) > maxValue) {
+        maxValue = list(i)
+      }
+    }
+    maxValue
+  }
+
+  def mode (liOne: List[Double]) : Double = {
+    var elements = collection.mutable.Map[Double, Int]()
+    var i = 0
+    var mostOccurances = 0.0
+    while ( i <= (liOne.length - 1)){
+      var n = 0
+      var acc = 0
+      while ( n <= (liOne.length - 1)){
+        if (liOne(i) == liOne(n)){
+          acc = acc + 1
+        }
+        n = n + 1
+      }
+      elements = elements + (liOne(i) -> acc)
+      i = i + 1
+    }
+
+    mostOccurances = elements.maxBy(_._2)._1
+    //println(mostOccurances)
+
+    return mostOccurances
+  }
+  def median(lst: List[Double]): Double = {
+    var median = 0.0
+    if (lst.length % 2 == 0) {
+      median = ((lst((lst.length / 2) - 1) + lst(lst.length / 2)) / 2)
+    }
+    else {
+      median = (lst(round(lst.length / 2)))
+    }
+    return median
+  }
+}
+
 
 
   //mean(List(Doubles…))
@@ -229,13 +346,45 @@ object Main extends App{
   //Write an object named FoldStats with the following functions implemented using the fold functions of Scala.
   // (You may not use built-in functions that compute these functions for you.)
 
-    def FoldStats() ={
+object foldStats {
 
-
+  def mean(list: List[Double]): Double = {
+    var total = list.fold(0.0) {
+      (z, i) => z + i
     }
+    var mean = (total / list.length)
+    return mean
+  }
 
+  def min(list: List[Double]): Double = {
+    var min = Double.MaxValue
+    list.fold(Double.MaxValue) {
+      (z, i) =>
+        if (min > i) {
+          min = i
+          i
+        }
+        else {
+          i
+        }
+    }
+    return min
+  }
 
-//mean(List(Doubles…))
-//min(List(Doubles…))
-//max(List(Doubles…))
+  def max(list: List[Double]): Double = {
+    var max = Double.MinValue
+    list.fold(Double.MinValue) {
+      (z, i) =>
+        if (max < i) {
+          max = i
+          i
+        }
+        else {
+          i
+        }
+    }
+    return max
+  }
 }
+
+
